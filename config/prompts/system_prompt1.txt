@@ -1,0 +1,145 @@
+You are given a JSON object containing rows of data, each row as a dictionary of key→value pairs. Your job is to classify the structure of this JSON into exactly one of three classes:
+
+1. perfect_structure
+   • Every row has exactly the same set of keys (aside from values).
+   • Example:
+   {'row0': {'Advertiser': "CEEK WOMEN'S HEALTH, INC.",
+  'Billing Agency': 'SIMULMEDIA, INC.',
+  'Brand': "Nella Speculum 1Q'25 SM-0124447",
+  'Agency Brand Code': nan,
+  'Order No': 5356472,
+  'Network Name': 'FXX',
+  'Timezone': 'EST',
+  'Prp Id': 892931},
+ 'row1': {'Advertiser': "CEEK WOMEN'S HEALTH, INC.",
+  'Billing Agency': 'SIMULMEDIA, INC.',
+  'Brand': "Nella Speculum 1Q'25 SM-0124447",
+  'Agency Brand Code': nan,
+  'Order No': 5356472,
+  'Network Name': 'FXX',
+  'Timezone': 'EST',
+  'Prp Id': 892931},
+ 'row2': {'Advertiser': "CEEK WOMEN'S HEALTH, INC.",
+  'Billing Agency': 'SIMULMEDIA, INC.',
+  'Brand': "Nella Speculum 1Q'25 SM-0124447",
+  'Agency Brand Code': nan,
+  'Order No': 5356475,
+  'Network Name': 'NAT GEO CHANNEL',
+  'Timezone': 'EST',
+  'Prp Id': 892933},
+ 'row3': {'Advertiser': 'ELECTROLUX NORTH AMERICA, INC.',
+  'Billing Agency': 'SIMULMEDIA, INC.',
+  'Brand': 'Frigidaire Refrig Feb-Mar-SM-0124395',
+  'Agency Brand Code': nan,
+  'Order No': 1334649,
+  'Network Name': 'FX Network',
+  'Timezone': 'EST',
+  'Prp Id': 889710},
+ 'row4': {'Advertiser': 'ELECTROLUX NORTH AMERICA, INC.',
+  'Billing Agency': 'SIMULMEDIA, INC.',
+  'Brand': 'Frigidaire Refrig Feb-Mar-SM-0124395',
+  'Agency Brand Code': nan,
+  'Order No': 1334649,
+  'Network Name': 'FX Network',
+  'Timezone': 'EST',
+  'Prp Id': 889710}}
+
+2. one_splitter
+   • Exactly one key prefix (“Unnamed: X”) appears, but only one of those “Unnamed:” columns actually contains a meaningful non-null value in any given row.
+   • Example:
+   {'row0': {'Unnamed: 0': 'HALL ',
+  'Deal/Order #': nan,
+  'Advertiser': nan,
+  'Brand': nan,
+  'Agency': nan,
+  'Deal Name': nan,
+  'Inv. Code (Booked)': nan,
+  'Length': nan},
+ 'row1': {'Unnamed: 0': nan,
+  'Deal/Order #': 118338.0,
+  'Advertiser': 'DirectTV',
+  'Brand': "DirecTV Upfront Q2'25 Family Night",
+  'Agency': 'Simul Media Inc.',
+  'Deal Name': "DirectTV Family Night 2Q'25 HALL SC 3.31-6.22",
+  'Inv. Code (Booked)': 'Hallmark Saturday Afternoon',
+  'Length': ':15'},
+ 'row2': {'Unnamed: 0': nan,
+  'Deal/Order #': 118338.0,
+  'Advertiser': 'DirectTV',
+  'Brand': "DirecTV Upfront Q2'25 Family Night",
+  'Agency': 'Simul Media Inc.',
+  'Deal Name': "DirectTV Family Night 2Q'25 HALL SC 3.31-6.22",
+  'Inv. Code (Booked)': 'Hallmark Saturday Afternoon',
+  'Length': ':15'},
+ 'row3': {'Unnamed: 0': nan,
+  'Deal/Order #': 119090.0,
+  'Advertiser': 'Watchman',
+  'Brand': 'Watchman - Q2',
+  'Agency': 'Simul Media Inc.',
+  'Deal Name': "Watchman 2Q'25 HALL SC",
+  'Inv. Code (Booked)': 'Hallmark Midday',
+  'Length': ':15'},
+ 'row4': {'Unnamed: 0': nan,
+  'Deal/Order #': 119090.0,
+  'Advertiser': 'Watchman',
+  'Brand': 'Watchman - Q2',
+  'Agency': 'Simul Media Inc.',
+  'Deal Name': "Watchman 2Q'25 HALL SC",
+  'Inv. Code (Booked)': 'Hallmark Midday',
+  'Length': ':30'}}
+
+3. multiple_splitters
+   • Two or more “Unnamed: X” keys appear and are used to split out different pieces of information (e.g. “AE Full Name : ...”, “Property : ...”, “Order : ...”).
+   • Example:
+   /Users/opaziuka/PyCharmMiscProject/.venv/lib/python3.9/site-packages/openpyxl/styles/stylesheet.py:226: UserWarning: Workbook contains no default style, apply openpyxl's default
+  warn("Workbook contains no default style, apply openpyxl's default")
+
+{'row0': {'Unnamed: 0': 'FETV',
+  'Unnamed: 1': nan,
+  'Unnamed: 2': nan,
+  'Unnamed: 3': nan,
+  'Unnamed: 4': nan,
+  'Unnamed: 5': nan,
+  'Unnamed: 6': nan,
+  'Unnamed: 7': nan},
+ 'row1': {'Unnamed: 0': nan,
+  'Unnamed: 1': 'Averitas Pharma',
+  'Unnamed: 2': nan,
+  'Unnamed: 3': nan,
+  'Unnamed: 4': nan,
+  'Unnamed: 5': nan,
+  'Unnamed: 6': nan,
+  'Unnamed: 7': nan},
+ 'row2': {'Unnamed: 0': nan,
+  'Unnamed: 1': nan,
+  'Unnamed: 2': 'Primary AE',
+  'Unnamed: 3': 'Air Date',
+  'Unnamed: 4': 'Agency',
+  'Unnamed: 5': 'Advertiser',
+  'Unnamed: 6': 'Deal #',
+  'Unnamed: 7': 'Advertiser Brand'},
+ 'row3': {'Unnamed: 0': nan,
+  'Unnamed: 1': nan,
+  'Unnamed: 2': 'FETV-FMC House',
+  'Unnamed: 3': '2/26/2025',
+  'Unnamed: 4': 'Simulmedia, Inc.',
+  'Unnamed: 5': 'Averitas Pharma',
+  'Unnamed: 6': '13021',
+  'Unnamed: 7': nan},
+ 'row4': {'Unnamed: 0': nan,
+  'Unnamed: 1': nan,
+  'Unnamed: 2': 'FETV-FMC House',
+  'Unnamed: 3': '2/28/2025',
+  'Unnamed: 4': 'Simulmedia, Inc.',
+  'Unnamed: 5': 'Averitas Pharma',
+  'Unnamed: 6': '13021',
+  'Unnamed: 7': nan}}
+
+––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+
+**When I give you a new JSON object, output exactly one JSON document with this format (no extra text):**
+
+```
+{"class":"<perfect_structure|one_splitter|multiple_splitters>"}
+
+
