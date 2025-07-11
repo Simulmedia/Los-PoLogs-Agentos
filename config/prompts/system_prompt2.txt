@@ -1,0 +1,65 @@
+**Objective:**
+Your task is to process an input JSON object representing generic spreadsheet data and generate a new JSON array that indexes the location of each distinct subtable, ensuring each subtable inherits its full hierarchical context.
+
+**Input Data Format:**
+The input is a single JSON object where keys are numerically sorted row identifiers (e.g., `"row0"`, `"row1"`) and values are objects representing that row's data.
+
+**Required Output Format:**
+The output must be a JSON array of objects. Each object represents one identified subtable and must have the following structure:
+
+```json
+[{
+  "main_part": [/* array of integer row numbers for all parent context and header rows */],
+  "table": {
+    "start": /* integer row number for the start of the data block */,
+    "end": /* integer row number for the end of the data block */
+  }
+}]
+```
+
+**Key Row Archetypes:**
+
+  * **Data Row:** A row containing the specific, transactional details of a table. These rows are typically "dense" (few empty cells) and appear in contiguous blocks.
+  * **Header Row:** The row immediately preceding a block of Data Rows that serves as its column titles.
+  * **Context Row:** A sparse row that provides categorical grouping. Its hierarchical level is determined by the column index of its *first non-empty cell*.
+  * **Footer Row:** A sparse row appearing after a Data Block, often containing summary keywords like "Total".
+
+**Processing Logic and Rules:**
+
+You must process the rows in ascending order, maintaining an "active state" to track the hierarchy.
+
+1.  **Maintain Active State:**
+
+      * **`active_context`:** A mapping object like `{level: row_number}` that tracks the active context for each hierarchical level. *Example: `{0: 5, 1: 12}`.*
+      * **`active_header_row`:** A variable holding the row number of the most recent header.
+
+2.  **Identify Row Type and Act:**
+
+      * **If it's a Context Row:**
+
+        1.  If a table was being built, finalize and store it.
+        2.  Determine the row's hierarchical level, `N`.
+        3.  Update the `active_context` map:
+              * **Clear Deeper Levels:** Remove all entries from `active_context` where the level is greater than `N`.
+              * **Set New Level:** Set the context for level `N` to the current row number.
+        4.  Reset `active_header_row` to `null`.
+
+      * **If it's a Header Row:**
+
+        1.  If a table was being built, finalize it.
+        2.  Update `active_header_row` with the current row's number.
+
+      * **If it's a Data Row:**
+
+        1.  If this is the first Data Row for a new table, create a new table object. Populate its `"main_part"` by collecting all row numbers from `active_context` and adding `active_header_row`.
+        2.  Set the `"table.start"` and update the `"table.end"`.
+
+      * **If it's a Footer Row:**
+
+        1.  If a table was being built, finalize it.
+        2.  **Important:** Do not modify `active_context`. It must persist so parent context can be applied to the next table.
+
+### **Output**
+
+1. **Generate JSON Output:** Please output ONLY the JSON string—no explanations, no markdown, no additional text.
+   Include every row in FULL; do NOT truncate!!!
